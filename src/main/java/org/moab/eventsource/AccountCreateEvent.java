@@ -1,12 +1,22 @@
 package org.moab.eventsource;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.security.auth.login.AccountNotFoundException;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public class AccountCreateEvent implements MOABEvent {
-    private UUID uuid;
-    private ZonedDateTime created;
-    private int version = 0;
+    @Getter @Setter private UUID uuid;
+    @Setter private ZonedDateTime created;
+    @Getter private int version = 0;
+    @Getter private String name = "createEvent";
+    @Getter @Setter private String accountNumber;
+    @Getter @Setter private String clientName;
+    @Getter @Setter private String clientID;
+    @Getter @Setter private LocalDate clientDoB;
 
     @Override
     public UUID getUUID() {
@@ -19,22 +29,17 @@ public class AccountCreateEvent implements MOABEvent {
     }
 
     @Override
-    public int getVersion() {
-        return version;
-    }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
     public void setUUID(UUID uuid) {
         this.uuid = uuid;
     }
 
-    @Override
-    public void setCreated(ZonedDateTime created) {
-        this.created = created;
+    public AccountCreateEvent() {
+        super();
+    }
+
+    public AccountCreateEvent(String clientName, String clientID, LocalDate dob) {
+        this.clientName = clientName;
+        this.clientID = clientID;
+        this.clientDoB = dob;
     }
 }

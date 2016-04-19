@@ -9,7 +9,6 @@ import org.moab.eventsource.MOABEvent;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Date;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -32,11 +31,25 @@ public class EventLogTest {
         EventLog log = new EventLog(clock);
 
         assertThat(log.isEmpty()).isTrue();
-        log.add(createEvent);
+        boolean applied = log.add(createEvent);
+        assertThat(applied).isTrue();
         assertThat(log.isEmpty()).isFalse();
         MOABEvent persisted = log.get(0);
 
         assertThat(persisted.getUUID()).isNotNull();
         assertThat(persisted.createdAt().toInstant()).isEqualTo(instant);
+    }
+
+    @Test
+    public void DoesNotPersistSameEvent() {
+        AccountCreateEvent createEvent = new AccountCreateEvent();
+
+        EventLog log = new EventLog(clock);
+
+        assertThat(log.isEmpty()).isTrue();
+        assertThat(log.add(createEvent)).isTrue();
+        assertThat(log.size()).isEqualTo(1);
+        assertThat(log.add(createEvent)).isFalse();
+        assertThat(log.size()).isEqualTo(1);
     }
 }

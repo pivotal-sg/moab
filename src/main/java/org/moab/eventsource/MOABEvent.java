@@ -1,7 +1,6 @@
 package org.moab.eventsource;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 /**
