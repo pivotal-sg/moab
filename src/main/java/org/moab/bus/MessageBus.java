@@ -1,6 +1,7 @@
 package org.moab.bus;
 
 import org.moab.command.MOABCommand;
+import org.moab.exception.UnsupportedCommandException;
 import org.moab.handler.MOABHandler;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class MessageBus {
         handlerRegistry.get(commandName).add(handler);
     }
 
-    public void send(String commandName, MOABCommand command) {
+    public void send(String commandName, MOABCommand command) throws UnsupportedCommandException {
         ArrayList<MOABHandler> handlers = handlerRegistry.get(commandName);
         for(MOABHandler handler : handlers) {
            handler.handle(command);
