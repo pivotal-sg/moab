@@ -15,8 +15,9 @@ public class CreateAccountHandler implements MOABHandler {
         this.eventLog = eventLog;
     }
 
-    public void handle(AccountCreateCommand command) {
-        handleCreateAccount(command);
+    public void handle(Object o) {
+        AccountCreateCommand cmd = (AccountCreateCommand) o;
+        handleCreateAccount(cmd);
     }
 
     private void handleCreateAccount(AccountCreateCommand command) {
@@ -25,6 +26,7 @@ public class CreateAccountHandler implements MOABHandler {
 
         UUID accountUUID = UUID.randomUUID();
         accountCreated.setAccountNumber(accountUUID.toString()); // assume uniqueness here; its a UUID.
+
         if (eventLog.add(accountCreated)) {
             ag.apply(accountCreated);
         }

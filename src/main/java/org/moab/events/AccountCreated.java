@@ -19,8 +19,11 @@ public class AccountCreated implements MOABEvent {
     @Getter @Setter private LocalDate clientDoB;
 
     public static AccountCreated fromCommand(AccountCreateCommand command) {
-        return new AccountCreated(command.getClientName(), command.getClientID(), command.getClientDoB());
-
+        return new AccountCreated(
+                command.getClientName(),
+                command.getClientID(),
+                command.getClientDoB()
+        );
     }
 
     public AccountCreated() {

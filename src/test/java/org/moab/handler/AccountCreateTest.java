@@ -23,4 +23,5 @@ public class AccountCreateTest {
 
         assertThat(eventLog.size()).isEqualTo(1);
     }
+
 }
