@@ -1,6 +1,6 @@
 package org.moab.eventlog;
 
-import org.moab.eventsource.MOABEvent;
+import org.moab.events.MOABEvent;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;

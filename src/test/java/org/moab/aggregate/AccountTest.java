@@ -1,7 +1,7 @@
 package org.moab.aggregate;
 
 import org.junit.Test;
-import org.moab.eventsource.AccountCreateEvent;
+import org.moab.events.AccountCreated;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -14,8 +14,8 @@ public class AccountTest {
     private LocalDate dob = LocalDate.of(1970, 01, 01);
     String clientName = "Silver Surfer";
 
-    private AccountCreateEvent createAccountEvent(String clientName, String clientId, String accountNumber) {
-        AccountCreateEvent createEvent = new AccountCreateEvent(clientName, clientId, dob);
+    private AccountCreated createAccountEvent(String clientName, String clientId, String accountNumber) {
+        AccountCreated createEvent = new AccountCreated(clientName, clientId, dob);
         createEvent.setUUID(UUID.randomUUID());
         createEvent.setCreated(ZonedDateTime.now());
         createEvent.setAccountNumber(accountNumber);
@@ -27,7 +27,7 @@ public class AccountTest {
         // With a new event, create an account
 
         AccountAggregate ag = new AccountAggregate();
-        AccountCreateEvent createEvent = createAccountEvent(clientName, "SilverSurferID", "1");
+        AccountCreated createEvent = createAccountEvent(clientName, "SilverSurferID", "1");
 
         ag.apply(createEvent);
 
@@ -42,7 +42,7 @@ public class AccountTest {
     public void doesNotApplySameEventTwice() {
         AccountAggregate firstAg = new AccountAggregate();
         AccountAggregate secondAg = new AccountAggregate();
-        AccountCreateEvent createEvent = createAccountEvent(clientName, "SilverSurferID", "1");
+        AccountCreated createEvent = createAccountEvent(clientName, "SilverSurferID", "1");
 
         assertThat(firstAg.apply(createEvent)).isTrue();
         assertThat(firstAg.apply(createEvent)).isFalse(); // isn't applied to the same ag
@@ -52,8 +52,8 @@ public class AccountTest {
     public void canCreateTwoDifferntAccounts() {
         AccountAggregate firstAg = new AccountAggregate();
         AccountAggregate secondAg = new AccountAggregate();
-        AccountCreateEvent firstCreateEvent = createAccountEvent(clientName, "SilverSurferID", "1");
-        AccountCreateEvent secondCreateEvent = createAccountEvent("Galcticus", "BigGuyID", "2");
+        AccountCreated firstCreateEvent = createAccountEvent(clientName, "SilverSurferID", "1");
+        AccountCreated secondCreateEvent = createAccountEvent("Galcticus", "BigGuyID", "2");
 
         assertThat(firstAg.apply(firstCreateEvent)).isTrue();
         assertThat(secondAg.apply(secondCreateEvent)).isTrue();

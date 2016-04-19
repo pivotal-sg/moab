@@ -1,34 +1,33 @@
 package org.moab.handler;
 
+import org.moab.aggregate.AccountAggregate;
+import org.moab.command.AccountCreateCommand;
+import org.moab.command.MOABCommand;
 import org.moab.eventlog.EventLog;
-import org.moab.eventsource.AccountCreateEvent;
-import org.moab.eventsource.MOABEvent;
+import org.moab.events.AccountCreated;
 
 import java.util.UUID;
 
-public class CreateAccountHandler implements MOABHanlder {
+public class CreateAccountHandler implements MOABHandler {
     private EventLog eventLog;
 
     public CreateAccountHandler(EventLog eventLog) {
         this.eventLog = eventLog;
     }
 
-    @Override
-    public void handle(MOABEvent command) {
-        if (command.getName() == "createEvent") {
-            AccountCreateEvent createCommand = (AccountCreateEvent) command;
-            for (MOABEvent event: eventLog) {
-                if (((AccountCreateEvent) event).getClientID() == createCommand.getClientID()) {
-                    return;
-                }
-            }
-        handleCreateAccount(createCommand);
+    public void handle(AccountCreateCommand command) {
+        handleCreateAccount(command);
+    }
+
+    private void handleCreateAccount(AccountCreateCommand command) {
+        AccountCreated accountCreated = AccountCreated.fromCommand(command);
+        AccountAggregate ag = new AccountAggregate();
+
+        UUID accountUUID = UUID.randomUUID();
+        accountCreated.setAccountNumber(accountUUID.toString()); // assume uniqueness here; its a UUID.
+        if (eventLog.add(accountCreated)) {
+            ag.apply(accountCreated);
         }
     }
 
-    private void handleCreateAccount(AccountCreateEvent command) {
-        UUID accountUUID = UUID.randomUUID();
-        command.setAccountNumber(accountUUID.toString()); // assume uniqueness here; its a UUID.
-        eventLog.add(command);
-    }
 }

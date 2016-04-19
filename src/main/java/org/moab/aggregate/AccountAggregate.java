@@ -2,8 +2,8 @@ package org.moab.aggregate;
 
 import lombok.Getter;
 import org.moab.eventlog.EventLog;
-import org.moab.eventsource.AccountCreateEvent;
-import org.moab.eventsource.MOABEvent;
+import org.moab.events.AccountCreated;
+import org.moab.events.MOABEvent;
 
 import java.time.LocalDate;
 
@@ -22,25 +22,23 @@ public class AccountAggregate {
 
     /** apply an event to update this aggregate; the new state is applied incrementally
      *
-     * @param moabEvent a MOABEvent, such as AccountCreateEvent
+     * @param accountCreated an AccountCreated, such as AccountCreated
      * @return if the event was applied or not.  `false` if it is a duplicate.
      */
-    public boolean apply(MOABEvent moabEvent) {
-        switch (moabEvent.getName()) {
-            case "createEvent":
-                AccountCreateEvent createEvent = (AccountCreateEvent) moabEvent;
-                // only apply the event if we haven't added in this event already
-                if (appliedEvents.add(createEvent)) {
-                    balance = 0;
-                    clientName = createEvent.getClientName();
-                    accountNumber = createEvent.getAccountNumber();
-                    clientDoB = createEvent.getClientDoB();
-                    clientID = createEvent.getClientID();
-                    return true;
-                }
-                return false;
-            default:
-                return false;
+    public boolean apply(AccountCreated accountCreated) {
+        if (appliedEvents.add(accountCreated)) {
+            balance = 0;
+            clientName = accountCreated.getClientName();
+            accountNumber = accountCreated.getAccountNumber();
+            clientDoB = accountCreated.getClientDoB();
+            clientID = accountCreated.getClientID();
+            return true;
         }
+        return false;
     }
+
+    public boolean apply(MOABEvent moabEvent) {
+        return false;
+    }
+
 }

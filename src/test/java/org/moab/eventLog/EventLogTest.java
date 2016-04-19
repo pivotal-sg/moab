@@ -3,8 +3,8 @@ package org.moab.eventLog;
 import org.junit.Before;
 import org.junit.Test;
 import org.moab.eventlog.EventLog;
-import org.moab.eventsource.AccountCreateEvent;
-import org.moab.eventsource.MOABEvent;
+import org.moab.events.AccountCreated;
+import org.moab.events.MOABEvent;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -26,7 +26,7 @@ public class EventLogTest {
     @Test
     public void pushEventToLog() {
         // MOABEvent is pushed to a log, and it has a UUID and Timestamp added
-        AccountCreateEvent createEvent = new AccountCreateEvent();
+        AccountCreated createEvent = new AccountCreated();
 
         EventLog log = new EventLog(clock);
 
@@ -42,7 +42,7 @@ public class EventLogTest {
 
     @Test
     public void DoesNotPersistSameEvent() {
-        AccountCreateEvent createEvent = new AccountCreateEvent();
+        AccountCreated createEvent = new AccountCreated();
 
         EventLog log = new EventLog(clock);
 
