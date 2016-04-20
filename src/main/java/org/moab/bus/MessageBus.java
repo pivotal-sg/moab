@@ -4,12 +4,16 @@ import org.moab.aggregate.AccountAggregate;
 import org.moab.command.AccountCreateCommand;
 import org.moab.eventlog.EventLog;
 import org.moab.handler.CreateAccountHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MessageBus {
     CreateAccountHandler createAccountHandler;
 
     private EventLog eventLog;
 
+    @Autowired
     public MessageBus(EventLog eventLog) {
         this.eventLog = eventLog;
         createAccountHandler = new CreateAccountHandler(eventLog);

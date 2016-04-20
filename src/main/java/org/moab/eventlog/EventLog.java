@@ -1,6 +1,7 @@
 package org.moab.eventlog;
 
 import org.moab.events.MOABEvent;
+import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
@@ -8,6 +9,7 @@ import java.util.Iterator;
 import java.util.UUID;
 import java.util.Vector;
 
+@Component
 public class EventLog extends Vector<MOABEvent> {
 
     private Clock clock;
