@@ -31,6 +31,15 @@ public class MessageBusTest {
         }
     }
 
+    class WrongEventHandler implements MOABHandler {
+        public boolean called = false;
+
+        public void handle(Object wrongCommand) throws UnsupportedCommandException {
+            if (!(wrongCommand instanceof WrongCommand)) { throw new UnsupportedCommandException();}
+            called = true;
+        }
+    }
+
     @Test
     public void eventBusCallsHandlerOnEvent() throws UnsupportedCommandException {
         FakeEventHandler fakeEventHandler = new FakeEventHandler();
@@ -48,6 +57,19 @@ public class MessageBusTest {
 
         assertThat(thrown).isInstanceOf(UnsupportedCommandException.class);
         assertThat(fakeEventHandler.called).isFalse();
+    }
+
+    @Test
+    public void eventBusDispatchesCorrectHandler() throws UnsupportedCommandException {
+        FakeEventHandler fakeEventHandler = new FakeEventHandler();
+        WrongEventHandler wrongEventHandler = new WrongEventHandler();
+
+        bus.register("fakeCommand", fakeEventHandler);
+        bus.register("wrongEvent", wrongEventHandler);
+        bus.send("fakeCommand", new FakeCommand());
+
+        assertThat(fakeEventHandler.called).isTrue();
+        assertThat(wrongEventHandler.called).isFalse();
     }
 
 }
