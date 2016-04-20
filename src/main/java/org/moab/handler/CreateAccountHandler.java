@@ -14,7 +14,7 @@ public class CreateAccountHandler {
         this.eventLog = eventLog;
     }
 
-    public void handle(AccountCreateCommand command) {
+    public AccountAggregate handle(AccountCreateCommand command) {
         AccountCreated accountCreated = AccountCreated.fromCommand(command);
         AccountAggregate ag = new AccountAggregate();
 
@@ -24,6 +24,7 @@ public class CreateAccountHandler {
         if (eventLog.add(accountCreated)) {
             ag.apply(accountCreated);
         }
+        return ag;
     }
 
 }
