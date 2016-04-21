@@ -1,8 +1,7 @@
-package org.moab.eventLog;
+package org.moab.repository;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.moab.eventlog.EventLog;
 import org.moab.events.AccountCreated;
 import org.moab.events.MOABEvent;
 

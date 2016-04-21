@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import com.jayway.restassured.RestAssured;
 import org.junit.runner.RunWith;
 import org.moab.MoabApplication;
-import org.moab.eventlog.EventLog;
+import org.moab.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.IntegrationTest;
@@ -29,12 +29,11 @@ public class AccountIntegrationTest {
     public int port;
 
     @Autowired
-    EventLog eventLog;
+    AccountRepository accountRepository;
 
     @Before
     public void setUp() {
         RestAssured.port = port;
-        eventLog.clear();
     }
 
     @Test

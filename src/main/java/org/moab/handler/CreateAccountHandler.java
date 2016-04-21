@@ -2,16 +2,19 @@ package org.moab.handler;
 
 import org.moab.aggregate.AccountAggregate;
 import org.moab.command.AccountCreateCommand;
-import org.moab.eventlog.EventLog;
+import org.moab.repository.AccountRepository;
 import org.moab.events.AccountCreated;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
 public class CreateAccountHandler {
-    private EventLog eventLog;
 
-    public CreateAccountHandler(EventLog eventLog) {
-        this.eventLog = eventLog;
+    private AccountRepository accountRepository;
+
+    @Autowired
+    public CreateAccountHandler(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
 
     public AccountAggregate handle(AccountCreateCommand command) {
@@ -21,7 +24,7 @@ public class CreateAccountHandler {
         UUID accountUUID = UUID.randomUUID();
         accountCreated.setAccountNumber(accountUUID.toString()); // assume uniqueness here; its a UUID.
 
-        if (eventLog.add(accountCreated)) {
+        if (accountRepository.add(accountCreated)) {
             ag.apply(accountCreated);
         }
         return ag;

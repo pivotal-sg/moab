@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.moab.aggregate.AccountAggregate;
 import org.moab.command.AccountCreateCommand;
-import org.moab.eventlog.EventLog;
+import org.moab.repository.AccountRepository;
 
 import java.time.LocalDate;
 
@@ -13,21 +13,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AccountCreateTest {
 
     private LocalDate dob = LocalDate.of(1970, 01, 01);
-    private EventLog eventLog;
+    private AccountRepository accountRepo;
     private CreateAccountHandler createAccountHandler;
 
     @Before
     public void setUp() {
-        eventLog = new EventLog();
-        createAccountHandler = new CreateAccountHandler(eventLog);
+        accountRepo = new AccountRepository();
+        createAccountHandler = new CreateAccountHandler(accountRepo);
     }
 
     @Test
     public void createEventCommandPersists() {
         AccountCreateCommand command = new AccountCreateCommand("Silver Surfer", "SilverSurferID", dob);
-        createAccountHandler.handle(command);
+        AccountAggregate ag = createAccountHandler.handle(command);
 
-        assertThat(eventLog.size()).isEqualTo(1);
+        AccountAggregate retrieved = accountRepo.find(ag.getAccountNumber());
+        assertThat(retrieved.getAccountNumber()).isEqualTo(ag.getAccountNumber());
     }
 
     @Test

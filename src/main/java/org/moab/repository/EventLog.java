@@ -1,4 +1,4 @@
-package org.moab.eventlog;
+package org.moab.repository;
 
 import org.moab.events.MOABEvent;
 import org.springframework.stereotype.Component;
@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
 
@@ -40,12 +41,17 @@ public class EventLog {
         return indexOfEvent(event) != -1;
     }
 
-    public synchronized boolean add(MOABEvent moabEvent) {
+    public boolean add(MOABEvent moabEvent) {
+        // New Event
         if (null == moabEvent.getUUID()) {
             moabEvent.setUUID(UUID.randomUUID());
             moabEvent.setCreated(ZonedDateTime.now(clock));
+            return repo.add(moabEvent);
         }
-        if (hasEvent(moabEvent)) { return false; }
+        if (hasEvent(moabEvent)) {
+            return false;
+        }
+        // Replay Event
         return repo.add(moabEvent);
     }
 
@@ -61,7 +67,17 @@ public class EventLog {
         return repo.get(index);
     }
 
-    public synchronized int size() {
+    public int size() {
         return repo.size();
+    }
+
+    public List<MOABEvent> getAllForEventType(Class<?> eventClass) {
+        Vector<MOABEvent> events = new Vector<MOABEvent>();
+        for (MOABEvent anEvent: repo) {
+            if (anEvent.getClass() == eventClass) {
+                events.add(anEvent);
+            }
+        }
+        return events;
     }
 }

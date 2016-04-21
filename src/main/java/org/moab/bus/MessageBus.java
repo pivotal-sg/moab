@@ -2,7 +2,7 @@ package org.moab.bus;
 
 import org.moab.aggregate.AccountAggregate;
 import org.moab.command.AccountCreateCommand;
-import org.moab.eventlog.EventLog;
+import org.moab.repository.AccountRepository;
 import org.moab.handler.CreateAccountHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 public class MessageBus {
     CreateAccountHandler createAccountHandler;
 
-    private EventLog eventLog;
+    private AccountRepository accountRepository;
 
     @Autowired
-    public MessageBus(EventLog eventLog) {
-        this.eventLog = eventLog;
-        createAccountHandler = new CreateAccountHandler(eventLog);
+    public MessageBus(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+        createAccountHandler = new CreateAccountHandler(accountRepository);
     }
 
     public AccountAggregate send(AccountCreateCommand command) {

@@ -1,7 +1,7 @@
 package org.moab.aggregate;
 
 import lombok.Getter;
-import org.moab.eventlog.EventLog;
+import org.moab.repository.AccountRepository;
 import org.moab.events.AccountCreated;
 import org.moab.events.MOABEvent;
 
@@ -14,10 +14,10 @@ public class AccountAggregate {
     @Getter private LocalDate clientDoB;
     @Getter private String accountNumber;
 
-    private EventLog appliedEvents;
+    private AccountRepository appliedEvents;
 
     public AccountAggregate() {
-        appliedEvents = new EventLog();
+        appliedEvents = new AccountRepository();
     }
 
     /** apply an event to update this aggregate; the new state is applied incrementally
@@ -40,5 +40,4 @@ public class AccountAggregate {
     public boolean apply(MOABEvent moabEvent) {
         return false;
     }
-
 }

@@ -6,9 +6,8 @@ import org.junit.Test;
 import org.moab.bus.MessageBus;
 import org.moab.command.AccountCreateCommand;
 import org.moab.dto.Account;
-import org.moab.eventlog.EventLog;
+import org.moab.repository.AccountRepository;
 import org.moab.handler.CreateAccountHandler;
-import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 
@@ -24,7 +23,7 @@ public class AccountControllerTest {
 
     @Before
     public void setUp(){
-        EventLog eventLog = new EventLog();
+        AccountRepository eventLog = new AccountRepository();
         messageBus = new MessageBus(eventLog);
         accountController = new AccountController(messageBus);
         createAccountHandler = new CreateAccountHandler(eventLog);
