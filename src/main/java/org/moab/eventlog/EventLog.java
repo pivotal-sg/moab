@@ -10,8 +10,9 @@ import java.util.UUID;
 import java.util.Vector;
 
 @Component
-public class EventLog extends Vector<MOABEvent> {
+public class EventLog {
 
+    private Vector<MOABEvent> repo;
     private Clock clock;
 
     public EventLog() {
@@ -20,10 +21,11 @@ public class EventLog extends Vector<MOABEvent> {
 
     public EventLog(Clock clock) {
         this.clock = clock;
+        this.repo = new Vector<MOABEvent>();
     }
 
     private int indexOfEvent(MOABEvent event) {
-        Iterator<MOABEvent> iterator = iterator();
+        Iterator<MOABEvent> iterator = repo.iterator();
         MOABEvent myEvent;
         int c = 0;
         while (iterator.hasNext()) {
@@ -38,13 +40,28 @@ public class EventLog extends Vector<MOABEvent> {
         return indexOfEvent(event) != -1;
     }
 
-    @Override
     public synchronized boolean add(MOABEvent moabEvent) {
         if (null == moabEvent.getUUID()) {
             moabEvent.setUUID(UUID.randomUUID());
             moabEvent.setCreated(ZonedDateTime.now(clock));
         }
         if (hasEvent(moabEvent)) { return false; }
-        return super.add(moabEvent);
+        return repo.add(moabEvent);
+    }
+
+    public void clear() {
+        repo.clear();
+    }
+
+    public boolean isEmpty() {
+        return repo.isEmpty();
+    }
+
+    public MOABEvent get(int index) {
+        return repo.get(index);
+    }
+
+    public synchronized int size() {
+        return repo.size();
     }
 }
