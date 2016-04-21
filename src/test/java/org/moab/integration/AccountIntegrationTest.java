@@ -50,7 +50,7 @@ public class AccountIntegrationTest {
                 contentType("application/json").
                 body(json.toString()).
         when().
-                post("/account").
+                post("/api/v1/account").
         then().
                 statusCode(201).
                 body("accountNumber", notNullValue()).
