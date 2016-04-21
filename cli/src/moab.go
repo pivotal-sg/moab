@@ -1,52 +1,58 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"io/ioutil"
-	"encoding/json"
-	"strings"
-	"flag"
-	"log"
+  "fmt"
+  "net/http"
+  "io/ioutil"
+  "encoding/json"
+  "strings"
+  "flag"
+  "log"
+  "os"
 )
 
 type Create struct {
-	ClientName string `json:"clientName"`
-	ClientID string `json:"clientID"`
-	ClientDoB string `json:"clientDoB"`
+  ClientName string `json:"clientName"`
+  ClientID string `json:"clientID"`
+  ClientDoB string `json:"clientDoB"`
 }
 
 var createCommand Create
 
 func init() {
-	createCommand = Create{}
-	flag.StringVar(&createCommand.ClientName, "name", "", "Client Name")
-	flag.StringVar(&createCommand.ClientID, "id", "", "Client NRIC/FIN")
-	flag.StringVar(&createCommand.ClientDoB, "dob", "", "Client Date of Birth")
-	flag.Parse()
+  createCommand = Create{}
+  flag.StringVar(&createCommand.ClientName, "name", "", "Client Name")
+  flag.StringVar(&createCommand.ClientID, "id", "", "Client NRIC/FIN")
+  flag.StringVar(&createCommand.ClientDoB, "dob", "", "Client Date of Birth")
+  flag.Parse()
 }
 
 func main() {
+  var url string
 
-	url := "http://localhost:8080/account/"
-	payloadString, err := json.Marshal(createCommand)
-	if err != nil {
-		log.Fatalf("Failed to parse your magic command! %v\n", err.Error())
-	}
+  url = os.Getenv("MOAB_URL")
 
-	payload := strings.NewReader(string(payloadString))
+  if url == "" {
+    url = "http://localhost:8080/api/v1/account/"
+  }
+  payloadString, err := json.Marshal(createCommand)
+  if err != nil {
+    log.Fatalf("Failed to parse your magic command! %v\n", err.Error())
+  }
 
-	req, _ := http.NewRequest("POST", url, payload)
+  payload := strings.NewReader(string(payloadString))
 
-	req.Header.Add("content-type", "application/json")
-	req.Header.Add("cache-control", "no-cache")
+  req, _ := http.NewRequest("POST", url, payload)
 
-	res, _ := http.DefaultClient.Do(req)
+  req.Header.Add("content-type", "application/json")
+  req.Header.Add("cache-control", "no-cache")
 
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+  res, _ := http.DefaultClient.Do(req)
 
-	fmt.Println(res)
-	fmt.Println(string(body))
+  defer res.Body.Close()
+  body, _ := ioutil.ReadAll(res.Body)
+
+  fmt.Println(res)
+  fmt.Println(string(body))
 
 }
