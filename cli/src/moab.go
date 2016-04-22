@@ -53,6 +53,34 @@ func createShowCommandFlags() (*Show, *flag.FlagSet) {
 	return &showCommand, showFlags
 }
 
+// ShowRequest generates the http.Request needed to be sent to 
+// see an account's details.
+func ShowRequest(show Show, url string) *http.Request {
+	req, _ := http.NewRequest("GET", url + "/" +show.AccountNumber, nil)
+
+	req.Header.Add("cache-control", "no-cache")
+	return req
+}
+
+
+// CreateRequest generates the http.Request needed to be sent to 
+// create a new Account
+func CreateRequest(create Create, url string) *http.Request {
+	payloadString, err := json.Marshal(create)
+	if err != nil {
+		log.Fatalf("Failed to parse your magic command! %v\n", err.Error())
+	}
+
+	payload := strings.NewReader(string(payloadString))
+
+	req, _ := http.NewRequest("POST", url, payload)
+
+	req.Header.Add("content-type", "application/json")
+	req.Header.Add("cache-control", "no-cache")
+
+	return req
+}
+
 func init() {
 	url = os.Getenv("MOAB_URL")
 	if url == "" {
@@ -60,7 +88,9 @@ func init() {
 	}
 }
 
-func dispatchCommand(args []string) {
+// DispatchCommand handles the subcommands, dispatching the correct
+// action.
+func DispatchCommand(args []string) {
 	if (len(os.Args) < 3) {
 		fmt.Println("Need some commands...")
 		os.Exit(1)
@@ -84,6 +114,8 @@ func dispatchCommand(args []string) {
 		}
 }
 
+// printResponse prints out the response from a prior command,
+// pretty formating the JSON output.
 func printResponse(res *http.Response, err error) {
 	if err != nil {
 		fmt.Println("No response")
@@ -106,33 +138,17 @@ func printResponse(res *http.Response, err error) {
 }
 
 func createAccount(createCommand *Create) {
-	payloadString, err := json.Marshal(createCommand)
-	if err != nil {
-		log.Fatalf("Failed to parse your magic command! %v\n", err.Error())
-	}
-
-	payload := strings.NewReader(string(payloadString))
-
-	req, _ := http.NewRequest("POST", url, payload)
-
-	req.Header.Add("content-type", "application/json")
-	req.Header.Add("cache-control", "no-cache")
-
+	req := CreateRequest(*createCommand, url)
 	res, err := http.DefaultClient.Do(req)
 	printResponse(res, err)
 }
 
 func showAccount(show *Show) {
-	req, _ := http.NewRequest("GET", url + "/" +show.AccountNumber, nil)
-
-	req.Header.Add("cache-control", "no-cache")
-
+	req := ShowRequest(*show, url)
 	res, err := http.DefaultClient.Do(req)
 	printResponse(res, err)
 }
 
 func main() {
-	dispatchCommand(os.Args)
-
-
+	DispatchCommand(os.Args)
 }
