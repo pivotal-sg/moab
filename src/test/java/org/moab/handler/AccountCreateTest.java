@@ -38,5 +38,4 @@ public class AccountCreateTest {
 
         assertThat(ag.getAccountNumber()).isNotEmpty();
     }
-
 }

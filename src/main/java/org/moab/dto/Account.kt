@@ -14,6 +14,7 @@ data class Account(val accountNumber: String,
                    val clientName: String,
                    val clientID: String,
                    @get:JsonSerialize(using = LocalDateSerializer::class)
-                   val clientDoB: LocalDate)
+                   val clientDoB: LocalDate,
+                   val balance: Long)
 
 

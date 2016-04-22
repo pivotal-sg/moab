@@ -16,6 +16,7 @@ public class AccountCreated implements MOABEvent {
     @Getter @Setter private String accountNumber;
     @Getter @Setter private String clientName;
     @Getter @Setter private String clientID;
+    @Getter private Long balance;
     @Getter @Setter private LocalDate clientDoB;
 
     public static AccountCreated fromCommand(AccountCreateCommand command) {
@@ -34,6 +35,7 @@ public class AccountCreated implements MOABEvent {
         this.clientName = clientName;
         this.clientID = clientID;
         this.clientDoB = dob;
+        this.balance = new Long(0);
     }
 
     @Override
