@@ -69,9 +69,9 @@ public class AccountIntegrationTest {
 
         given().
                 accept("application/json").
-        when().log().all().
+        when().
                 get("/api/v1/account/" + accountNumber).
-        then().log().all().
+        then().
                 statusCode(200).
                 body("accountNumber", is(equalTo(accountNumber))).
                 body("clientName", is(equalTo(clientName))).
