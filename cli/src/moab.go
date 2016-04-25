@@ -123,7 +123,7 @@ func printResponse(res *http.Response, err error) {
 	}
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
-	var outputData *map[string]string = new(map[string]string)
+	var outputData *map[string]interface{} = new(map[string]interface{})
 
 	if err != nil || res.StatusCode >= 400 {
 		fmt.Printf("StatusCode: %s\nMessage: %s\n", res.Status, string(body))
