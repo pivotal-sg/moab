@@ -55,6 +55,7 @@ public class AccountIntegrationTest {
         then().
                 statusCode(201).
                 body("accountNumber", notNullValue()).
+                body("accountNumber", nullValue()).
                 body("clientDoB", is(equalTo(dobString)));
 
 
